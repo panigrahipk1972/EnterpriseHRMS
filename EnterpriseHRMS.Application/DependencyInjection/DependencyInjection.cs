@@ -2,24 +2,30 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using MediatR;
+using EnterpriseHRMS.Application.Behaviors;
 
 namespace EnterpriseHRMS.Application.DependencyInjection;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
+    public static IServiceCollection AddApplication(
+    this IServiceCollection services)
+{
+    Assembly assembly = Assembly.GetExecutingAssembly();
+
+    services.AddMediatR(cfg =>
     {
-        Assembly assembly = Assembly.GetExecutingAssembly();
+        cfg.RegisterServicesFromAssembly(assembly);
+    });
 
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssembly(assembly);
-        });
+    services.AddTransient(
+        typeof(IPipelineBehavior<,>),
+        typeof(ValidationBehavior<,>));
 
-        services.AddAutoMapper(assembly);
+    services.AddAutoMapper(assembly);
 
-        services.AddValidatorsFromAssembly(assembly);
+    services.AddValidatorsFromAssembly(assembly);
 
-        return services;
-    }
+    return services;
+}
 }

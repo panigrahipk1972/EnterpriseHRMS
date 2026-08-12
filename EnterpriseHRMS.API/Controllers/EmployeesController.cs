@@ -3,6 +3,7 @@ using EnterpriseHRMS.Application.Features.Employee.Queries.GetEmployees;
 using EnterpriseHRMS.Application.Features.Employee.Queries.GetEmployeeById;
 using EnterpriseHRMS.Application.Features.Employee.Commands.UpdateEmployee;
 using EnterpriseHRMS.Application.Features.Employee.Commands.DeleteEmployee;
+using EnterpriseHRMS.Application.Features.Employee.Commands.PatchEmployee;
 using EnterpriseHRMS.API.Models.Employees;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -63,6 +64,35 @@ public async Task<IActionResult> Update(
     CancellationToken cancellationToken)
 {
     var command = new UpdateEmployeeCommand(
+        id,
+        request.EmployeeCode,
+        request.FirstName,
+        request.LastName,
+        request.Email,
+        request.PhoneNumber,
+        request.DateOfJoining,
+        request.DepartmentId,
+        request.Salary,
+        request.IsActive);
+
+    var result = await _mediator.Send(
+        command,
+        cancellationToken);
+
+    if (!result)
+    {
+        return NotFound();
+    }
+
+    return NoContent();
+}
+[HttpPatch("{id:guid}")]
+public async Task<IActionResult> Patch(
+    Guid id,
+    PatchEmployeeRequest request,
+    CancellationToken cancellationToken)
+{
+    var command = new PatchEmployeeCommand(
         id,
         request.EmployeeCode,
         request.FirstName,
