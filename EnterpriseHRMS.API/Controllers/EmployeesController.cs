@@ -7,9 +7,10 @@ using EnterpriseHRMS.Application.Features.Employee.Commands.PatchEmployee;
 using EnterpriseHRMS.API.Models.Employees;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EnterpriseHRMS.API.Controllers;
-
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class EmployeesController : ControllerBase
